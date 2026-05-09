@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Real-time rainbow probability map for Oahu, Hawaii. Updates every 10 minutes. We'll tell you when to step outside.">
+  <meta property="og:title" content="🌈 Oahu Rainbow Forecast">
+  <meta property="og:description" content="Hawaii is the Rainbow State — and now you'll know exactly when to look up. Live rainbow chance map for Oahu, updated every 10 minutes.">
+  <meta property="og:type" content="website">
+  <title>🌈 Oahu Rainbow Forecast</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0d1b2a;
+      --bg2:     #111f30;
+      --border:  rgba(255,255,255,0.08);
+      --text:    #e8edf5;
+      --muted:   #7a8fa8;
+      --green:   #5ee77a;
+      --orange:  #f6ad55;
+      --blue:    #90cdf4;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(90,200,130,0.12), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 110%, rgba(144,205,244,0.10), transparent);
+      pointer-events: none;
+    }
+
+    .hero-emoji {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-10px); }
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      background: linear-gradient(120deg, #5ee77a, #90cdf4, #f6ad55, #5ee77a);
+      background-size: 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 6s linear infinite;
+      margin-bottom: 16px;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 300% 50%; }
+    }
+
+    .hero-tagline {
+      font-size: clamp(1rem, 3vw, 1.3rem);
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 40px;
+    }
+    .hero-tagline strong { color: var(--text); }
+
+    .btn-open {
+      display: inline-block;
+      background: linear-gradient(135deg, #2d6a4f, #1a6b8a);
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      padding: 16px 40px;
+      border-radius: 50px;
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 24px rgba(90,200,130,0.2);
+    }
+    .btn-open:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(90,200,130,0.3);
+    }
+
+    .hero-note {
+      margin-top: 20px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* ── Rainbow State badge ── */
+    .state-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50px;
+      padding: 6px 16px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .state-badge strong { color: var(--orange); }
+
+    /* ── Sections ── */
+    section {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+    section + section {
+      border-top: 1px solid var(--border);
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 28px;
+      color: var(--text);
+    }
+    h2 .emoji { margin-right: 8px; }
+
+    p { color: var(--muted); margin-bottom: 16px; }
+    p strong { color: var(--text); }
+
+    /* ── How it works cards ── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .step {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .step-icon  { font-size: 1.8rem; margin-bottom: 10px; }
+    .step-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+    .step-desc  { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── Score legend ── */
+    .scores {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .score-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+    }
+    .score-dot {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .score-label { font-size: 0.9rem; color: var(--text); font-weight: 600; min-width: 80px; }
+    .score-desc  { font-size: 0.85rem; color: var(--muted); }
+
+    /* ── FAQ ── */
+    .faq { display: flex; flex-direction: column; gap: 20px; }
+    .faq-q { font-weight: 700; color: var(--text); margin-bottom: 6px; font-size: 0.95rem; }
+    .faq-a { color: var(--muted); font-size: 0.88rem; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 40px 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    footer a { color: var(--blue); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    .footer-lang { margin-top: 10px; }
+    .footer-lang a { color: var(--muted); font-size: 0.78rem; }
+
+    /* ── Scroll hint ── */
+    .scroll-hint {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--muted);
+      font-size: 0.78rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      animation: fadeInUp 1s 1.5s both;
+    }
+    .scroll-hint::after {
+      content: '';
+      width: 1px;
+      height: 32px;
+      background: linear-gradient(to bottom, var(--muted), transparent);
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Hero ── -->
+<div class="hero">
+  <div class="state-badge">🌺 Hawaii — <strong>The Rainbow State</strong></div>
+  <div class="hero-emoji">🌈</div>
+  <h1>Oahu Rainbow Forecast</h1>
+  <p class="hero-tagline">
+    We can't promise a rainbow. But we can tell you<br>
+    <strong>when the conditions are just right to step outside.</strong>
+  </p>
+  <a href="https://473259746493-rainbow-forecast-honolulu.s3.ap-northeast-1.amazonaws.com/index.html"
+     target="_blank" class="btn-open">
+    🗺 Open Live Map
+  </a>
+  <p class="hero-note">No app download · Works in any browser · Free</p>
+  <div class="scroll-hint">scroll to learn more</div>
+</div>
+
+<!-- ── What is this ── -->
+<section>
+  <h2><span class="emoji">💡</span>What is this?</h2>
+  <p>
+    Hawaii is called the Rainbow State for a reason — the Ko'olau mountains force warm trade winds upward,
+    creating rain on one side of the island while the sun shines on the other.
+    <strong>Over 200 rainbow days a year</strong> in areas like Kailua and Kāne'ohe.
+  </p>
+  <p>
+    But rainbows aren't in weather forecasts. This map fills that gap.
+    It checks the actual conditions — <strong>sun angle, cloud cover, and rainfall</strong> —
+    across Oahu every 10 minutes and scores each area from 0 to 100.
+  </p>
+  <p>
+    It won't guarantee a rainbow. But when the score is high, it's worth stepping outside.
+  </p>
+</section>
+
+<!-- ── How it works ── -->
+<section>
+  <h2><span class="emoji">🔍</span>How does it work?</h2>
+  <p>Four conditions are checked to calculate each area's rainbow score.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-icon">☀️</div>
+      <div class="step-title">Sun Angle</div>
+      <div class="step-desc">Rainbows appear when the sun is between 0° and 42° above the horizon — morning and late afternoon are prime time.</div>
+    </div>
+    <div class="step">
+      <div class="step-icon">☁️</div>
+      <div class="step-title">Cloud Cover</div>
+      <div class="step-desc">If clouds block the sun, no rainbow. We check that cloud cover is under 70% on the sunny side.</div>
+    </div>
+    <div class="step">
+      <div class="step-icon">🌧️</div>
+      <div class="step-title">Rain Nearby</div>
+      <div class="step-desc">You need raindrops to split the sunlight. Live precipitation data confirms whether rain is present in the area.</div>
+    </div>
+    <div class="step">
+      <div class="step-icon">🧭</div>
+      <div class="step-title">Direction Guide</div>
+      <div class="step-desc">Rainbows appear opposite the sun. The map header shows which direction to look based on the current sun position.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Reading the map ── -->
+<section>
+  <h2><span class="emoji">🗺</span>Reading the map</h2>
+  <p>Each colored dot represents a 2km area and its current rainbow score. Tap any dot for details.</p>
+  <div class="scores">
+    <div class="score-row">
+      <div class="score-dot" style="background:#5ee77a"></div>
+      <div class="score-label">70 – 100</div>
+      <div class="score-desc">🌈 High chance — go look outside right now</div>
+    </div>
+    <div class="score-row">
+      <div class="score-dot" style="background:#f6ad55"></div>
+      <div class="score-label">40 – 69</div>
+      <div class="score-desc">👀 Worth a look — conditions are coming together</div>
+    </div>
+    <div class="score-row">
+      <div class="score-dot" style="background:#90cdf4"></div>
+      <div class="score-label">1 – 39</div>
+      <div class="score-desc">🤔 Low chance — conditions aren't quite there yet</div>
+    </div>
+    <div class="score-row">
+      <div class="score-dot" style="background:#2d3748"></div>
+      <div class="score-label">0</div>
+      <div class="score-desc">💤 No conditions — nighttime, no rain, or sun too high</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ── -->
+<section>
+  <h2><span class="emoji">❓</span>FAQ</h2>
+  <div class="faq">
+    <div class="faq-item">
+      <div class="faq-q">The score was high but I didn't see a rainbow</div>
+      <div class="faq-a">
+        Weather data comes from numerical models, which don't capture every local micro-condition.
+        Think of a high score as "conditions look favorable" — not a guarantee.
+        Rainbows are still magic.
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What area does this cover?</div>
+      <div class="faq-a">
+        The map covers roughly a 70km × 70km area centered near Pearl City,
+        including Honolulu, Waikiki, Diamond Head, Kailua, Kāne'ohe, North Shore,
+        and most of Oahu's major areas.
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">How often does it update?</div>
+      <div class="faq-a">
+        Every 10 minutes. The map skips nighttime and midday hours automatically,
+        since rainbows can't form when the sun is too high (above 42°) or below the horizon.
+        Best viewing windows are roughly 6–9 AM and 3–6 PM HST.
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Do I need to install anything?</div>
+      <div class="faq-a">
+        Nope. It's just a webpage. Works on any smartphone or browser, no account needed.
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Why does Hawaii have so many rainbows?</div>
+      <div class="faq-a">
+        The Ko'olau mountain range intercepts the northeast trade winds, pushing moist air upward
+        and creating localized rain on the windward side — while the leeward side stays sunny.
+        That combination of rain + sun at the same time is exactly what makes a rainbow.
+        Areas like Kailua and Kāne'ohe see over 200 rainbow days a year.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section style="text-align:center; padding-top: 40px; padding-bottom: 80px;">
+  <p style="font-size:1.1rem; color: var(--text); margin-bottom: 24px;">
+    Early morning and late afternoon after a shower —<br>
+    that's when Oahu puts on a show.
+  </p>
+  <a href="https://473259746493-rainbow-forecast-honolulu.s3.ap-northeast-1.amazonaws.com/index.html"
+     target="_blank" class="btn-open">
+    🗺 Open Live Map
+  </a>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <p>Oahu Rainbow Forecast — a personal project</p>
+  <p style="margin-top:6px;">
+    Weather data: <a href="https://open-meteo.com" target="_blank">Open-Meteo</a> ·
+    Map: <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>
+  </p>
+  <p class="footer-lang" style="margin-top:10px;">
+    <a href="index.html">🇯🇵 東京版（日本語）</a>
+  </p>
+</footer>
+
+</body>
+</html>
