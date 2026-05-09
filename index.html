@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="今すぐ外を見る価値があるか教えてくれる、東京圏の虹予報マップ。10分おきに自動更新。">
+  <meta property="og:title" content="🌈 虹予報マップ">
+  <meta property="og:description" content="「今すぐ外を見て」と教えてくれる虹の可能性マップ。東京駅中心・半径50km。">
+  <meta property="og:type" content="website">
+  <title>🌈 虹予報マップ</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0d1b2a;
+      --bg2:     #111f30;
+      --border:  rgba(255,255,255,0.08);
+      --text:    #e8edf5;
+      --muted:   #7a8fa8;
+      --green:   #5ee77a;
+      --orange:  #f6ad55;
+      --blue:    #90cdf4;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(90,200,130,0.12), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 110%, rgba(144,205,244,0.10), transparent);
+      pointer-events: none;
+    }
+
+    .hero-emoji {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-10px); }
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      background: linear-gradient(120deg, #5ee77a, #90cdf4, #f6ad55, #5ee77a);
+      background-size: 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 6s linear infinite;
+      margin-bottom: 16px;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 300% 50%; }
+    }
+
+    .hero-tagline {
+      font-size: clamp(1rem, 3vw, 1.3rem);
+      color: var(--muted);
+      max-width: 480px;
+      margin-bottom: 40px;
+    }
+    .hero-tagline strong { color: var(--text); }
+
+    .btn-open {
+      display: inline-block;
+      background: linear-gradient(135deg, #2d6a4f, #1a6b8a);
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      padding: 16px 40px;
+      border-radius: 50px;
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 24px rgba(90,200,130,0.2);
+    }
+    .btn-open:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(90,200,130,0.3);
+    }
+
+    .hero-note {
+      margin-top: 20px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* ── Sections ── */
+    section {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+    section + section {
+      border-top: 1px solid var(--border);
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 28px;
+      color: var(--text);
+    }
+    h2 .emoji { margin-right: 8px; }
+
+    p { color: var(--muted); margin-bottom: 16px; }
+    p strong { color: var(--text); }
+
+    /* ── 仕組みカード ── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .step {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .step-icon { font-size: 1.8rem; margin-bottom: 10px; }
+    .step-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+    .step-desc  { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── 凡例 ── */
+    .scores {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .score-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+    }
+    .score-dot {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .score-label { font-size: 0.9rem; color: var(--text); font-weight: 600; min-width: 80px; }
+    .score-desc  { font-size: 0.85rem; color: var(--muted); }
+
+    /* ── FAQ ── */
+    .faq { display: flex; flex-direction: column; gap: 20px; }
+    .faq-item {}
+    .faq-q { font-weight: 700; color: var(--text); margin-bottom: 6px; font-size: 0.95rem; }
+    .faq-a { color: var(--muted); font-size: 0.88rem; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 40px 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    footer a { color: var(--blue); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Scroll hint ── */
+    .scroll-hint {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--muted);
+      font-size: 0.78rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      animation: fadeInUp 1s 1.5s both;
+    }
+    .scroll-hint::after {
+      content: '';
+      width: 1px;
+      height: 32px;
+      background: linear-gradient(to bottom, var(--muted), transparent);
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Hero ── -->
+<div class="hero">
+  <div class="hero-emoji">🌈</div>
+  <h1>虹予報マップ</h1>
+  <p class="hero-tagline">
+    「絶対出てる」は言えない。でも<strong>「今すぐ外を見て」</strong>は言える。<br>
+    東京圏の虹の可能性を、10分おきにお知らせします。
+  </p>
+  <a href="https://473259746493-rainbow-forecast-daishi.s3.ap-northeast-1.amazonaws.com/index.html"
+     target="_blank" class="btn-open">
+    🗺 マップを開く
+  </a>
+  <p class="hero-note">ブラウザで開くだけ・インストール不要・無料</p>
+  <div class="scroll-hint">スクロールで詳しく</div>
+</div>
+
+<!-- ── 概要 ── -->
+<section>
+  <h2><span class="emoji">💡</span>これは何？</h2>
+  <p>
+    虹は気まぐれで、天気予報には載りません。でも虹が出るかどうかは、
+    <strong>太陽の高さ・雲の量・雨の有無</strong>という条件が揃えばある程度わかります。
+  </p>
+  <p>
+    このマップは東京駅を中心とした<strong>半径約50km圏内</strong>を細かく区切り、
+    それぞれのエリアで「今、虹が出る条件が揃っているか」を0〜100のスコアで表示します。
+    10分おきに自動で更新されます。
+  </p>
+  <p>
+    虹が出ることを保証するものではありませんが、
+    条件が揃っているときに外を見るきっかけになれば嬉しいです。
+  </p>
+</section>
+
+<!-- ── 仕組み ── -->
+<section>
+  <h2><span class="emoji">🔍</span>どうやって判定している？</h2>
+  <p>以下の4つの条件をもとに、虹スコアを計算しています。</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-icon">☀️</div>
+      <div class="step-title">太陽の高さ</div>
+      <div class="step-desc">仰角が 0〜42° のとき虹が見える角度になります。真昼や夜はスキップ。</div>
+    </div>
+    <div class="step">
+      <div class="step-icon">☁️</div>
+      <div class="step-title">雲の量</div>
+      <div class="step-desc">太陽が雲に隠れていると虹は出ません。雲量 70% 未満が条件。</div>
+    </div>
+    <div class="step">
+      <div class="step-icon">🌧️</div>
+      <div class="step-title">雨の有無</div>
+      <div class="step-desc">前方に雨粒がないと光が分散しません。気象データで降水の有無を確認。</div>
+    </div>
+    <div class="step">
+      <div class="step-icon">🧭</div>
+      <div class="step-title">方角の案内</div>
+      <div class="step-desc">虹は太陽の反対側に出ます。マップ上部に「虹方向」として表示します。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 見方 ── -->
+<section>
+  <h2><span class="emoji">🗺</span>マップの見方</h2>
+  <p>色のついた点がエリアごとの虹スコアです。点をタップすると詳細が表示されます。</p>
+  <div class="scores">
+    <div class="score-row">
+      <div class="score-dot" style="background:#5ee77a"></div>
+      <div class="score-label">70〜100点</div>
+      <div class="score-desc">🌈 チャンス大 — 今すぐ外を見てみて！</div>
+    </div>
+    <div class="score-row">
+      <div class="score-dot" style="background:#f6ad55"></div>
+      <div class="score-label">40〜69点</div>
+      <div class="score-desc">👀 チャンスあり — 外に出てみる価値あり</div>
+    </div>
+    <div class="score-row">
+      <div class="score-dot" style="background:#90cdf4"></div>
+      <div class="score-label">1〜39点</div>
+      <div class="score-desc">🤔 可能性低め — 条件がもう少し</div>
+    </div>
+    <div class="score-row">
+      <div class="score-dot" style="background:#2d3748"></div>
+      <div class="score-label">0点</div>
+      <div class="score-desc">💤 条件なし — 夜間、雨なし、昼間帯など</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ── -->
+<section>
+  <h2><span class="emoji">❓</span>よくある質問</h2>
+  <div class="faq">
+    <div class="faq-item">
+      <div class="faq-q">スコアが高いのに虹が見えなかった</div>
+      <div class="faq-a">
+        気象データは数値モデルによる予測値のため、実際の空の状態と異なる場合があります。
+        「虹が出る保証」ではなく「条件が揃っている可能性の目安」としてご利用ください。
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">対応エリアはどこ？</div>
+      <div class="faq-a">
+        東京駅を中心とした半径約24km（約50km四方）の範囲です。
+        横浜・さいたま・千葉・八王子あたりまでカバーしています。
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">どのくらいの頻度で更新される？</div>
+      <div class="faq-a">
+        10分おきに自動更新されます。ただし夜間・太陽が高い時間帯（真昼）は虹が出ないため計算をスキップします。
+        更新されるのは朝と夕方の時間帯（日の出後〜8時頃、15時〜日没前後）が中心です。
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">アプリのインストールは必要？</div>
+      <div class="faq-a">
+        不要です。ブラウザで開くだけで動作します。スマートフォンでもお使いいただけます。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section style="text-align:center; padding-top: 40px; padding-bottom: 80px;">
+  <p style="font-size:1.1rem; color: var(--text); margin-bottom: 24px;">
+    虹が出やすい時期は、雨上がりの朝と夕方。<br>空が気になったら開いてみてください。
+  </p>
+  <a href="https://473259746493-rainbow-forecast-daishi.s3.ap-northeast-1.amazonaws.com/index.html"
+     target="_blank" class="btn-open">
+    🗺 マップを開く
+  </a>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <p>虹予報マップ — 個人プロジェクト</p>
+  <p style="margin-top:6px;">
+    気象データ: <a href="https://open-meteo.com" target="_blank">Open-Meteo</a>
+    地図: <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>
+  </p>
+</footer>
+
+</body>
+</html>
