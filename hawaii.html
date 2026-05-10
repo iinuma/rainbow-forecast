@@ -189,6 +189,25 @@
     .score-label { font-size: 0.9rem; color: var(--text); font-weight: 600; min-width: 80px; }
     .score-desc  { font-size: 0.85rem; color: var(--muted); }
 
+    /* ── Diagram ── */
+    .diagram-wrap {
+      margin-top: 36px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .diagram-wrap img {
+      width: 100%;
+      display: block;
+    }
+    .diagram-caption {
+      background: var(--bg2);
+      padding: 12px 18px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
     /* ── FAQ ── */
     .faq { display: flex; flex-direction: column; gap: 20px; }
     .faq-q { font-weight: 700; color: var(--text); margin-bottom: 6px; font-size: 0.95rem; }
@@ -323,6 +342,19 @@
       <div class="score-label">0</div>
       <div class="score-desc">💤 No conditions — nighttime, no rain, or sun too high</div>
     </div>
+  </div>
+</section>
+
+<!-- ── How Rainbows Form ── -->
+<section>
+  <h2><span class="emoji">🔬</span>Why Sun + Rain = Rainbow</h2>
+  <p>
+    A rainbow forms when sunlight enters a raindrop, reflects inside it, and exits at an angle of about <strong>42°</strong> toward your eyes.
+    That's why the sun must be <strong>behind you</strong> and the rain <strong>in front of you</strong> — and why the sun's altitude matters so much.
+  </p>
+  <div class="diagram-wrap">
+    <img src="how-rainbows-form.jpg" alt="Diagram showing how rainbows form: sun angle, raindrop reflection, and observer position">
+    <div class="diagram-caption">How rainbows form — sun angle, raindrop refraction, and observer position</div>
   </div>
 </section>
 
