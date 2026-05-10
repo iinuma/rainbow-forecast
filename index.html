@@ -174,6 +174,25 @@
     .score-label { font-size: 0.9rem; color: var(--text); font-weight: 600; min-width: 80px; }
     .score-desc  { font-size: 0.85rem; color: var(--muted); }
 
+    /* ── Diagram ── */
+    .diagram-wrap {
+      margin-top: 36px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .diagram-wrap img {
+      width: 100%;
+      display: block;
+    }
+    .diagram-caption {
+      background: var(--bg2);
+      padding: 12px 18px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
     /* ── FAQ ── */
     .faq { display: flex; flex-direction: column; gap: 20px; }
     .faq-item {}
@@ -306,6 +325,19 @@
       <div class="score-label">0点</div>
       <div class="score-desc">💤 条件なし — 夜間、雨なし、昼間帯など</div>
     </div>
+  </div>
+</section>
+
+<!-- ── 虹の仕組み図解 ── -->
+<section>
+  <h2><span class="emoji">🔬</span>なぜ「太陽 + 雨」で虹が出るのか</h2>
+  <p>
+    虹は、太陽の光が雨粒の中に入り、内側で反射し、<strong>約42°の角度</strong>であなたの目に届くことで見えます。
+    だから太陽は<strong>後ろ</strong>、雨は<strong>前方</strong>にある必要があり、太陽の高さが重要なのです。
+  </p>
+  <div class="diagram-wrap">
+    <img src="niji-conditions.png" alt="虹が見える条件の図解：太陽の高さ・雨粒の屈折・観察者の位置">
+    <div class="diagram-caption">虹が見える条件 — 太陽の角度・雨粒での屈折・観察者との位置関係</div>
   </div>
 </section>
 
