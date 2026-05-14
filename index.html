@@ -112,6 +112,39 @@
       color: var(--muted);
     }
 
+    /* ── Region cards ── */
+    .regions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: center;
+      margin-top: 36px;
+      max-width: 560px;
+    }
+    .region-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 18px 28px;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      min-width: 140px;
+    }
+    .region-card:hover {
+      background: rgba(255,255,255,0.10);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .region-card .r-icon  { font-size: 2rem; }
+    .region-card .r-name  { font-size: 1rem; font-weight: 700; }
+    .region-card .r-range { font-size: 0.75rem; color: var(--muted); }
+    .regions-cta { margin: 0 auto; }
+
     /* ── Sections ── */
     section {
       max-width: 760px;
@@ -246,11 +279,29 @@
     「絶対出てる」は言えない。でも<strong>「今すぐ外を見て」</strong>は言える。<br>
     東京圏の虹の可能性を、10分おきにお知らせします。
   </p>
-  <a href="https://473259746493-rainbow-forecast-daishi.s3.ap-northeast-1.amazonaws.com/index.html"
-     target="_blank" class="btn-open">
-    🗺 マップを開く
-  </a>
-  <p class="hero-note">ブラウザで開くだけ・インストール不要・無料</p>
+  <p class="hero-note">エリアを選んでマップを開く</p>
+
+  <div class="regions">
+    <a href="https://473259746493-rainbow-forecast-daishi.s3.ap-northeast-1.amazonaws.com/index.html"
+       target="_blank" rel="noopener" class="region-card">
+      <span class="r-icon">🗼</span>
+      <span class="r-name">東京</span>
+      <span class="r-range">±40km</span>
+    </a>
+    <a href="https://473259746493-rainbow-forecast-miyako.s3.ap-northeast-1.amazonaws.com/index.html"
+       target="_blank" rel="noopener" class="region-card">
+      <span class="r-icon">🏝️</span>
+      <span class="r-name">宮古島</span>
+      <span class="r-range">±30km</span>
+    </a>
+    <a href="https://473259746493-rainbow-forecast-honolulu.s3.ap-northeast-1.amazonaws.com/index.html"
+       target="_blank" rel="noopener" class="region-card">
+      <span class="r-icon">🌺</span>
+      <span class="r-name">Honolulu</span>
+      <span class="r-range">±35km</span>
+    </a>
+  </div>
+
   <div class="scroll-hint">スクロールで詳しく</div>
 </div>
 
@@ -380,10 +431,26 @@
   <p style="font-size:1.1rem; color: var(--text); margin-bottom: 24px;">
     虹が出やすい時期は、雨上がりの朝と夕方。<br>空が気になったら開いてみてください。
   </p>
-  <a href="https://473259746493-rainbow-forecast-daishi.s3.ap-northeast-1.amazonaws.com/index.html"
-     target="_blank" class="btn-open">
-    🗺 マップを開く
-  </a>
+  <div class="regions regions-cta">
+    <a href="https://473259746493-rainbow-forecast-daishi.s3.ap-northeast-1.amazonaws.com/index.html"
+       target="_blank" rel="noopener" class="region-card">
+      <span class="r-icon">🗼</span>
+      <span class="r-name">東京</span>
+      <span class="r-range">±40km</span>
+    </a>
+    <a href="https://473259746493-rainbow-forecast-miyako.s3.ap-northeast-1.amazonaws.com/index.html"
+       target="_blank" rel="noopener" class="region-card">
+      <span class="r-icon">🏝️</span>
+      <span class="r-name">宮古島</span>
+      <span class="r-range">±30km</span>
+    </a>
+    <a href="https://473259746493-rainbow-forecast-honolulu.s3.ap-northeast-1.amazonaws.com/index.html"
+       target="_blank" rel="noopener" class="region-card">
+      <span class="r-icon">🌺</span>
+      <span class="r-name">Honolulu</span>
+      <span class="r-range">±35km</span>
+    </a>
+  </div>
 </section>
 
 <!-- ── Footer ── -->
