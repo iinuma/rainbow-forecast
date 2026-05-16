@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Real-time rainbow probability map for Oahu, Hawaii. Updates every 10 minutes. We'll tell you when to step outside.">
-  <meta property="og:title" content="🌈 Oahu Rainbow Forecast">
-  <meta property="og:description" content="Hawaii is the Rainbow State — and now you'll know exactly when to look up. Live rainbow chance map for Oahu, updated every 10 minutes.">
+  <meta name="description" content="Real-time rainbow probability maps for Hawaii — Oahu, Maui, Kauai, and Big Island. Updates every 10 minutes.">
+  <meta property="og:title" content="🌈 Hawaii Rainbow Forecast">
+  <meta property="og:description" content="Hawaii is the Rainbow State — now you'll know exactly when to look up. Live rainbow chance maps for all four main islands, updated every 10 minutes.">
   <meta property="og:type" content="website">
-  <title>🌈 Oahu Rainbow Forecast</title>
+  <title>🌈 Hawaii Rainbow Forecast</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -39,7 +39,7 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 60px 24px;
+      padding: 60px 24px 100px;
       position: relative;
       overflow: hidden;
     }
@@ -84,49 +84,58 @@
       font-size: clamp(1rem, 3vw, 1.3rem);
       color: var(--muted);
       max-width: 520px;
-      margin-bottom: 40px;
+      margin-bottom: 48px;
     }
     .hero-tagline strong { color: var(--text); }
 
-    .btn-open {
+    /* ── Island cards grid ── */
+    .island-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      width: 100%;
+      max-width: 880px;
+      margin-bottom: 24px;
+    }
+
+    .island-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .island-card:hover {
+      border-color: rgba(90,200,130,0.4);
+      transform: translateY(-3px);
+    }
+    .island-card-emoji { font-size: 2rem; }
+    .island-card-name  { font-size: 1rem; font-weight: 700; color: var(--text); }
+    .island-card-desc  { font-size: 0.78rem; color: var(--muted); text-align: center; line-height: 1.5; flex: 1; }
+    .island-card-btn {
       display: inline-block;
       background: linear-gradient(135deg, #2d6a4f, #1a6b8a);
       color: #fff;
-      font-size: 1.1rem;
+      font-size: 0.88rem;
       font-weight: 700;
-      padding: 16px 40px;
+      padding: 10px 24px;
       border-radius: 50px;
       text-decoration: none;
-      letter-spacing: 0.03em;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 4px 24px rgba(90,200,130,0.2);
+      letter-spacing: 0.02em;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 3px 16px rgba(90,200,130,0.18);
+      white-space: nowrap;
     }
-    .btn-open:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(90,200,130,0.3);
-    }
-
-    .btn-cam {
-      display: inline-block;
-      background: transparent;
-      color: rgba(255,255,255,0.7);
-      font-size: 0.9rem;
-      font-weight: 600;
-      padding: 10px 28px;
-      border-radius: 50px;
-      border: 1px solid rgba(255,255,255,0.25);
-      text-decoration: none;
-      letter-spacing: 0.03em;
-      transition: border-color 0.2s, color 0.2s;
-      margin-top: 12px;
-    }
-    .btn-cam:hover {
-      border-color: rgba(255,255,255,0.6);
-      color: #fff;
+    .island-card-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(90,200,130,0.28);
     }
 
     .hero-note {
-      margin-top: 20px;
       font-size: 0.8rem;
       color: var(--muted);
     }
@@ -208,6 +217,66 @@
     .score-label { font-size: 0.9rem; color: var(--text); font-weight: 600; min-width: 80px; }
     .score-desc  { font-size: 0.85rem; color: var(--muted); }
 
+    /* ── Forecast bar explainer ── */
+    .forecast-bar-demo {
+      background: rgba(13,27,42,0.92);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text);
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .fb-live {
+      background: linear-gradient(135deg, #2d6a4f, #1a6b8a);
+      color: #fff;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+    }
+    .fb-btn {
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+    }
+    .fb-btn.hi { border-color: #5ee77a; color: #5ee77a; }
+    .fb-play {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+
+    .forecast-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 8px;
+    }
+    .forecast-step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+    .forecast-step-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+    .forecast-step-body {}
+    .forecast-step-title { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .forecast-step-desc  { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+    .forecast-note { margin-top: 20px; }
+
     /* ── Diagram ── */
     .diagram-wrap {
       margin-top: 36px;
@@ -246,32 +315,52 @@
     .footer-lang a { color: var(--muted); font-size: 0.78rem; }
 
     /* ── Camera map ── */
-  #cam-map {
-    height: 320px;
-    border-radius: 14px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    margin-top: 20px;
-  }
-  .cam-note {
-    margin-top: 10px;
-    font-size: 0.8rem;
-    color: var(--muted);
-    text-align: center;
-  }
-  .cam-link { color: var(--blue); text-decoration: none; }
-  .cam-link:hover { text-decoration: underline; }
-  .diagram-wrap-cam { margin-top: 28px; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
+    #cam-map {
+      height: 320px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-top: 20px;
+    }
+    .cam-note {
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: center;
+    }
+    .cam-link { color: var(--blue); text-decoration: none; }
+    .cam-link:hover { text-decoration: underline; }
+    .diagram-wrap-cam { margin-top: 28px; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
 
-  /* ── CTA section ── */
-  .cta-section { text-align: center; padding-top: 40px; padding-bottom: 80px; }
-  .cta-lead { font-size: 1.1rem; color: var(--text); margin-bottom: 24px; }
+    /* ── CTA section ── */
+    .cta-section { text-align: center; padding-top: 40px; padding-bottom: 80px; }
+    .cta-lead { font-size: 1.1rem; color: var(--text); margin-bottom: 24px; }
+    .cta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .btn-open {
+      display: inline-block;
+      background: linear-gradient(135deg, #2d6a4f, #1a6b8a);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 14px 28px;
+      border-radius: 50px;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 24px rgba(90,200,130,0.2);
+    }
+    .btn-open:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(90,200,130,0.3);
+    }
 
-  /* ── Footer extras ── */
-  .footer-meta { margin-top: 6px; }
-  .footer-lang { margin-top: 10px; }
-
-  /* ── Scroll hint ── */
+    /* ── Scroll hint ── */
     .scroll-hint {
       position: absolute;
       bottom: 32px;
@@ -303,19 +392,43 @@
 <div class="hero">
   <div class="state-badge">🌺 Hawaii — <strong>The Rainbow State</strong></div>
   <div class="hero-emoji">🌈</div>
-  <h1>Oahu Rainbow Forecast</h1>
+  <h1>Hawaii Rainbow Forecast</h1>
   <p class="hero-tagline">
     We can't promise a rainbow. But we can tell you<br>
     <strong>when the conditions are just right to step outside.</strong>
   </p>
-  <a href="https://473259746493-rainbow-forecast-honolulu.s3.ap-northeast-1.amazonaws.com/index.html"
-     target="_blank" class="btn-open">
-    🗺 Open Live Map
-  </a>
-  <a href="https://www.earthcam.com/usa/hawaii/waikiki/beach/"
-     target="_blank" class="btn-cam">
-    📷 Waikiki Live Cam
-  </a>
+
+  <div class="island-grid">
+    <div class="island-card">
+      <div class="island-card-emoji">🌺</div>
+      <div class="island-card-name">Oahu</div>
+      <div class="island-card-desc">Honolulu · Kailua · Kāne'ohe · North Shore — 100 km coverage</div>
+      <a href="https://473259746493-rainbow-forecast-honolulu.s3.ap-northeast-1.amazonaws.com/index.html"
+         target="_blank" rel="noopener noreferrer" class="island-card-btn">🗺 Open Map</a>
+    </div>
+    <div class="island-card">
+      <div class="island-card-emoji">🌺</div>
+      <div class="island-card-name">Maui</div>
+      <div class="island-card-desc">Kahului · Lahaina · Hana · Haleakalā — 100 km coverage</div>
+      <a href="https://473259746493-rainbow-forecast-maui.s3.ap-northeast-1.amazonaws.com/index.html"
+         target="_blank" rel="noopener noreferrer" class="island-card-btn">🗺 Open Map</a>
+    </div>
+    <div class="island-card">
+      <div class="island-card-emoji">🌿</div>
+      <div class="island-card-name">Kauai</div>
+      <div class="island-card-desc">Lihue · Princeville · Na Pali Coast — 66 km coverage</div>
+      <a href="https://473259746493-rainbow-forecast-kauai.s3.ap-northeast-1.amazonaws.com/index.html"
+         target="_blank" rel="noopener noreferrer" class="island-card-btn">🗺 Open Map</a>
+    </div>
+    <div class="island-card">
+      <div class="island-card-emoji">🌋</div>
+      <div class="island-card-name">Big Island</div>
+      <div class="island-card-desc">Hilo · Kona · Waimea · South Cape — 164 km coverage</div>
+      <a href="https://473259746493-rainbow-forecast-bigisland.s3.ap-northeast-1.amazonaws.com/index.html"
+         target="_blank" rel="noopener noreferrer" class="island-card-btn">🗺 Open Map</a>
+    </div>
+  </div>
+
   <p class="hero-note">No app download · Works in any browser · Free</p>
   <div class="scroll-hint">scroll to learn more</div>
 </div>
@@ -324,14 +437,15 @@
 <section>
   <h2><span class="emoji">💡</span>What is this?</h2>
   <p>
-    Hawaii is called the Rainbow State for a reason — the Ko'olau mountains force warm trade winds upward,
-    creating rain on one side of the island while the sun shines on the other.
-    <strong>Over 200 rainbow days a year</strong> in areas like Kailua and Kāne'ohe.
+    Hawaii is called the Rainbow State for a reason — the mountain ranges force warm trade winds upward,
+    creating rain on one side of each island while the sun shines on the other.
+    <strong>Over 200 rainbow days a year</strong> in areas like Kailua and Kāne'ohe on Oahu,
+    and similarly on the windward slopes of Maui, Kauai, and the Big Island.
   </p>
   <p>
     But rainbows aren't in weather forecasts. This map fills that gap.
     It checks the actual conditions — <strong>sun angle, cloud cover, and rainfall</strong> —
-    across Oahu every 10 minutes and scores each area from 0 to 100.
+    across each island every 10 minutes and scores each 2–4 km area from 0 to 100.
   </p>
   <p>
     It won't guarantee a rainbow. But when the score is high, it's worth stepping outside.
@@ -351,7 +465,7 @@
     <div class="step">
       <div class="step-icon">☁️</div>
       <div class="step-title">Cloud Cover</div>
-      <div class="step-desc">If clouds block the sun, no rainbow. We check that cloud cover is under 70% on the sunny side.</div>
+      <div class="step-desc">If clouds block the sun, no rainbow. We check that cloud cover is low on the sunny side.</div>
     </div>
     <div class="step">
       <div class="step-icon">🌧️</div>
@@ -369,7 +483,7 @@
 <!-- ── Reading the map ── -->
 <section>
   <h2><span class="emoji">🗺</span>Reading the map</h2>
-  <p>Each colored dot represents a 2km area and its current rainbow score. Tap any dot for details.</p>
+  <p>Each colored dot represents a 2–4 km area and its current rainbow score. Tap any dot for details.</p>
   <div class="scores">
     <div class="score-row">
       <div class="score-dot" style="background:#5ee77a"></div>
@@ -394,6 +508,65 @@
   </div>
 </section>
 
+<!-- ── Forecast ── -->
+<section>
+  <h2><span class="emoji">📅</span>Forecast — See what's coming</h2>
+  <p>
+    The bar at the bottom of each map lets you step through the <strong>next 6 hours</strong> of predicted
+    rainbow conditions, one hour at a time.
+  </p>
+
+  <div class="forecast-bar-demo">
+    <span>📅</span>
+    <span class="fb-play">▶</span>
+    <span class="fb-live">Live</span>
+    <span class="fb-btn">6 AM</span>
+    <span class="fb-btn hi">7 AM</span>
+    <span class="fb-btn">8 AM</span>
+    <span class="fb-btn">9 AM</span>
+    <span class="fb-btn">10 AM</span>
+    <span class="fb-btn">11 AM</span>
+  </div>
+
+  <div class="forecast-steps">
+    <div class="forecast-step">
+      <div class="forecast-step-icon">🔴</div>
+      <div class="forecast-step-body">
+        <div class="forecast-step-title">Live button</div>
+        <div class="forecast-step-desc">Shows current real-time conditions. This is the default view when you open the map. The map refreshes automatically every 10 minutes.</div>
+      </div>
+    </div>
+    <div class="forecast-step">
+      <div class="forecast-step-icon">🕐</div>
+      <div class="forecast-step-body">
+        <div class="forecast-step-title">Hour buttons</div>
+        <div class="forecast-step-desc">Tap any hour to see the predicted rainbow score for that time slot. Green border = that hour's max score is 70 or above — a promising window. Updated every 10 minutes.</div>
+      </div>
+    </div>
+    <div class="forecast-step">
+      <div class="forecast-step-icon">▶</div>
+      <div class="forecast-step-body">
+        <div class="forecast-step-title">Play button</div>
+        <div class="forecast-step-desc">Animates through all 6 forecast frames automatically, 1.5 seconds per frame. Watch how rainbow conditions build or fade across the island over the coming hours.</div>
+      </div>
+    </div>
+    <div class="forecast-step">
+      <div class="forecast-step-icon">🌤</div>
+      <div class="forecast-step-body">
+        <div class="forecast-step-title">Overlay messages</div>
+        <div class="forecast-step-desc">"Sun too high" means the sun angle is above 42° — outside the rainbow window. "No rain clouds" means the sun angle is good but no rain is forecast. "Resting until sunrise" means it's nighttime.</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="forecast-note">
+    <strong>How the forecast is calculated:</strong> every 10 minutes, the same rainbow score algorithm
+    runs against 48-hour weather model data from Open-Meteo, picking the next 6 future UTC hours.
+    Think of it as 6 snapshots of what conditions are predicted to look like — not a guarantee,
+    but a useful guide for planning your morning or evening.
+  </p>
+</section>
+
 <!-- ── How Rainbows Form ── -->
 <section>
   <h2><span class="emoji">🔬</span>Why Sun + Rain = Rainbow</h2>
@@ -414,7 +587,7 @@
     The <a href="https://www.earthcam.com/usa/hawaii/waikiki/beach/"
        target="_blank" rel="noopener noreferrer" class="cam-link">EarthCam Waikiki Beach camera</a>
     faces <strong>east</strong> — the exact direction rainbows appear during late afternoon
-    when the sun is behind you in the west. If the score is high and you see color on the cam, go outside.
+    when the sun is behind you in the west. If the Oahu score is high and you see color on the cam, go outside.
   </p>
   <div id="cam-map"></div>
   <p class="cam-note">📍 Approx. camera location on Waikiki Beach · Orange cone = east-facing field of view</p>
@@ -423,7 +596,7 @@
     <img src="waikiki-cam-view.png" alt="Waikiki Beach live cam view — facing east toward Diamond Head">
     <div class="diagram-caption">
       East-facing view from Waikiki Beach — Diamond Head visible on the right.
-      When the score is high in late afternoon, this is the direction to watch.
+      When the Oahu score is high in late afternoon, this is the direction to watch.
     </div>
   </div>
 </section>
@@ -441,19 +614,28 @@
       </div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">What area does this cover?</div>
+      <div class="faq-q">What area does each map cover?</div>
       <div class="faq-a">
-        The map covers roughly a 70km × 70km area centered near Pearl City,
-        including Honolulu, Waikiki, Diamond Head, Kailua, Kāne'ohe, North Shore,
-        and most of Oahu's major areas.
+        Oahu covers roughly 100 × 100 km (Pearl City center) — the entire island including Honolulu, Kailua, and North Shore.
+        Maui covers 100 × 100 km (Kahului center) — Lahaina, Hana, and Haleakalā slopes.
+        Kauai covers 66 × 66 km (Lihue center) — the full island.
+        Big Island covers 164 × 164 km (geographic center) — Hilo, Kona, and down to Ka Lae (South Cape).
       </div>
     </div>
     <div class="faq-item">
       <div class="faq-q">How often does it update?</div>
       <div class="faq-a">
-        Every 10 minutes. The map skips nighttime and midday hours automatically,
-        since rainbows can't form when the sun is too high (above 42°) or below the horizon.
-        Best viewing windows are roughly 6–9 AM and 3–6 PM HST.
+        Every 10 minutes. The map skips midday hours automatically,
+        since rainbows can't form when the sun is above 42°.
+        Best viewing windows are roughly 6–9 AM and 3–6 PM HST year-round.
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">How far ahead does the forecast go?</div>
+      <div class="faq-a">
+        The forecast shows the next 6 hours, updated every 10 minutes.
+        Each hour button shows predicted rainbow scores for that time.
+        Buttons with a green border indicate a max score of 70 or above — worth planning around.
       </div>
     </div>
     <div class="faq-item">
@@ -465,10 +647,10 @@
     <div class="faq-item">
       <div class="faq-q">Why does Hawaii have so many rainbows?</div>
       <div class="faq-a">
-        The Ko'olau mountain range intercepts the northeast trade winds, pushing moist air upward
+        The mountain ranges on each island intercept the northeast trade winds, pushing moist air upward
         and creating localized rain on the windward side — while the leeward side stays sunny.
         That combination of rain + sun at the same time is exactly what makes a rainbow.
-        Areas like Kailua and Kāne'ohe see over 200 rainbow days a year.
+        Areas like Kailua and Kāne'ohe on Oahu see over 200 rainbow days a year.
       </div>
     </div>
   </div>
@@ -478,17 +660,23 @@
 <section class="cta-section">
   <p class="cta-lead">
     Early morning and late afternoon after a shower —<br>
-    that's when Oahu puts on a show.
+    that's when Hawaii puts on a show. Pick your island.
   </p>
-  <a href="https://473259746493-rainbow-forecast-honolulu.s3.ap-northeast-1.amazonaws.com/index.html"
-     target="_blank" rel="noopener noreferrer" class="btn-open">
-    🗺 Open Live Map
-  </a>
+  <div class="cta-grid">
+    <a href="https://473259746493-rainbow-forecast-honolulu.s3.ap-northeast-1.amazonaws.com/index.html"
+       target="_blank" rel="noopener noreferrer" class="btn-open">🌺 Oahu</a>
+    <a href="https://473259746493-rainbow-forecast-maui.s3.ap-northeast-1.amazonaws.com/index.html"
+       target="_blank" rel="noopener noreferrer" class="btn-open">🌺 Maui</a>
+    <a href="https://473259746493-rainbow-forecast-kauai.s3.ap-northeast-1.amazonaws.com/index.html"
+       target="_blank" rel="noopener noreferrer" class="btn-open">🌿 Kauai</a>
+    <a href="https://473259746493-rainbow-forecast-bigisland.s3.ap-northeast-1.amazonaws.com/index.html"
+       target="_blank" rel="noopener noreferrer" class="btn-open">🌋 Big Island</a>
+  </div>
 </section>
 
 <!-- ── Footer ── -->
 <footer>
-  <p>Oahu Rainbow Forecast — a personal project</p>
+  <p>Hawaii Rainbow Forecast — a personal project</p>
   <p class="footer-meta">
     Weather data: <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer">Open-Meteo</a> ·
     Map: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>
