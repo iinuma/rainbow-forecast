@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌈 Aloha Rainbow — Beta Test Guide</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:     #0d1b2a;
+      --bg2:    #111f30;
+      --border: rgba(255,255,255,0.08);
+      --text:   #e8edf5;
+      --muted:  #7a8fa8;
+      --green:  #5ee77a;
+      --orange: #f6ad55;
+      --blue:   #90cdf4;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      padding: 64px 24px 40px;
+      border-bottom: 1px solid var(--border);
+    }
+    .header-emoji { font-size: 3.5rem; margin-bottom: 16px; }
+    .header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      font-weight: 800;
+      background: linear-gradient(120deg, #5ee77a, #90cdf4, #f6ad55, #5ee77a);
+      background-size: 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 6s linear infinite;
+      margin-bottom: 12px;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 300% 50%; }
+    }
+    .header-sub {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* ── Steps ── */
+    .steps-container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .step {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 28px 28px 24px;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .step-num {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2d6a4f, #1a6b8a);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .step-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .step p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .step p:last-child { margin-bottom: 0; }
+    .step p strong { color: var(--text); }
+
+    .step ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .step ul li {
+      font-size: 0.88rem;
+      color: var(--muted);
+      padding-left: 1.2em;
+      position: relative;
+    }
+    .step ul li::before {
+      content: '·';
+      position: absolute;
+      left: 0;
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #2d6a4f, #1a6b8a);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 14px 32px;
+      border-radius: 50px;
+      text-decoration: none;
+      margin-top: 16px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(90,200,130,0.2);
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(90,200,130,0.3);
+    }
+
+    .arrow {
+      text-align: center;
+      font-size: 1.4rem;
+      color: var(--muted);
+      padding: 2px 0;
+    }
+
+    .note {
+      background: rgba(90, 200, 130, 0.07);
+      border: 1px solid rgba(90, 200, 130, 0.2);
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 14px;
+    }
+    .note strong { color: var(--green); }
+
+    /* ── Done ── */
+    .done {
+      text-align: center;
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+    .done-emoji { font-size: 3rem; margin-bottom: 16px; }
+    .done h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 12px; }
+    .done p { color: var(--muted); font-size: 0.9rem; margin-bottom: 10px; }
+    .done a { color: var(--blue); text-decoration: none; }
+    .done a:hover { text-decoration: underline; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    footer a { color: var(--blue); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-emoji">🌈</div>
+  <h1>Aloha Rainbow — Beta Test Guide</h1>
+  <p class="header-sub">How to install the app via TestFlight and what to try first</p>
+</div>
+
+<!-- Steps -->
+<div class="steps-container">
+
+  <!-- Step 1 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <div class="step-title">📲 Get TestFlight</div>
+    </div>
+    <p>TestFlight is Apple's official beta testing app. Download it for free from the App Store.</p>
+    <p><strong>Already have TestFlight?</strong> Skip to step 2.</p>
+    <a class="btn" href="https://apps.apple.com/app/testflight/id899247664" target="_blank" rel="noopener">
+      Open App Store — TestFlight
+    </a>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <!-- Step 2 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <div class="step-title">🔗 Open the Invite Link</div>
+    </div>
+    <p>Tap the button below <strong>on your iPhone</strong>. This will open TestFlight and show the Aloha Rainbow beta.</p>
+    <a class="btn" href="https://testflight.apple.com/join/U5VtEVYq" target="_blank" rel="noopener">
+      Join Aloha Rainbow Beta
+    </a>
+    <div class="note">
+      <strong>Note:</strong> Open this link directly on your iPhone — it won't work from a desktop browser.
+    </div>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <!-- Step 3 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <div class="step-title">⬇️ Install the App</div>
+    </div>
+    <p>Tap <strong>"Install"</strong> in TestFlight to download Aloha Rainbow (version 1.0).</p>
+    <p>After installation, tap <strong>"Open"</strong> to launch the app.</p>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <!-- Step 4 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">4</div>
+      <div class="step-title">📍 Grant Permissions</div>
+    </div>
+    <p>Two permission prompts will appear on first launch:</p>
+    <ul>
+      <li><strong>Location</strong> — tap "Allow While Using App" to enable island auto-detection</li>
+      <li><strong>Notifications</strong> — tap "Allow" to receive the morning rainbow outlook at 7am HST</li>
+    </ul>
+    <div class="note">
+      Both can be changed later in <strong>Settings → Aloha Rainbow</strong>.
+    </div>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <!-- Step 5 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">5</div>
+      <div class="step-title">🌺 Things to Try</div>
+    </div>
+    <p>Here's what to explore during testing:</p>
+    <ul>
+      <li>Check that the app auto-detects your island (Oahu, Maui, Kauai, or Big Island)</li>
+      <li>Switch islands manually using the dropdown at the top</li>
+      <li>Read the rainbow score and time windows on the forecast map</li>
+      <li>Tap <strong>"🌈 I see a rainbow!"</strong> when you spot one — it pins the sighting on the map</li>
+      <li>Wait for the 7am morning outlook notification (Hawaii time)</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- Done -->
+<div class="done">
+  <div class="done-emoji">🤙</div>
+  <h2>You're all set — mahalo!</h2>
+  <p>If you spot any issues or have feedback, please send a note to:</p>
+  <p><a href="mailto:async.sync@gmail.com">async.sync@gmail.com</a></p>
+  <p style="margin-top: 16px;">You can also send feedback directly from TestFlight by tapping <strong>Send Beta Feedback</strong> in the app.</p>
+</div>
+
+<!-- Footer -->
+<footer>
+  <p>Aloha Rainbow — Beta / <a href="privacy.html">Privacy Policy</a></p>
+</footer>
+
+</body>
+</html>
